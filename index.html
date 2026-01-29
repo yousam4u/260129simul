@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenix AI - AI 기반 업무 자동화 플랫폼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-navy: #0A1628;
+            --color-navy-light: #1a2942;
+            --color-emerald: #10B981;
+            --color-emerald-dark: #059669;
+            --color-gold: #F59E0B;
+            --color-gold-light: #FCD34D;
+            --color-blue: #3B82F6;
+            --color-purple: #8B5CF6;
+            --color-pink: #EC4899;
+            --color-red: #EF4444;
+            --color-cyan: #06B6D4;
+            --color-cream: #FFFBF0;
+            --color-slate: #475569;
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-navy);
+            color: var(--color-cream);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(245, 158, 11, 0.12) 0%, transparent 50%),
+                var(--color-navy);
+        }
+
+        .bg-animated::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image:
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 251, 240, 0.02) 2px, rgba(255, 251, 240, 0.02) 4px);
+            animation: grain 8s steps(10) infinite;
+        }
+
+        @keyframes grain {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            10% {
+                transform: translate(-5%, -10%);
+            }
+
+            30% {
+                transform: translate(3%, -15%);
+            }
+
+            50% {
+                transform: translate(12%, 9%);
+            }
+
+            70% {
+                transform: translate(-9%, 4%);
+            }
+
+            90% {
+                transform: translate(-1%, -7%);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 22, 40, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 251, 240, 0.1);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-cream);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-emerald);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero-text h1 {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.4rem;
+            color: rgba(255, 251, 240, 0.7);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+            justify-content: center;
+            margin-bottom: 4rem;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: 2px solid var(--color-emerald);
+            border-radius: 50px;
+            color: var(--color-emerald);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-emerald);
+            color: var(--color-navy);
+            transform: translateY(-2px);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255, 251, 240, 0.6);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Workflow Demo Section */
+        .workflow-demo {
+            padding: 6rem 5%;
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), transparent);
+        }
+
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 251, 240, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 251, 240, 0.1);
+            border-radius: 30px;
+            padding: 4rem;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .demo-header h3 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .workflow-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .workflow-tab {
+            padding: 1rem 2rem;
+            background: rgba(255, 251, 240, 0.03);
+            border: 2px solid rgba(255, 251, 240, 0.2);
+            border-radius: 15px;
+            color: rgba(255, 251, 240, 0.7);
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .workflow-tab:hover {
+            border-color: var(--color-emerald);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-emerald);
+            transform: translateY(-2px);
+        }
+
+        .workflow-tab.active {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            border-color: var(--color-emerald);
+            color: white;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 2rem 0;
+            background: rgba(255, 251, 240, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 251, 240, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--color-cream);
+        }
+
+        .progress-percentage {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-emerald);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 251, 240, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-emerald), var(--color-gold));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .progress-status {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: rgba(255, 251, 240, 0.6);
+        }
+
+        .workflow-canvas {
+            background: rgba(10, 22, 40, 0.5);
+            border-radius: 20px;
+            padding: 3rem;
+            min-height: 500px;
+            position: relative;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .workflow-canvas.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .workflow-nodes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .workflow-node {
+            background: rgba(255, 251, 240, 0.05);
+            border: 2px solid rgba(255, 251, 240, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            flex: 1;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .workflow-node:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-emerald);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .workflow-node.active {
+            border-color: var(--color-emerald);
+            background: rgba(16, 185, 129, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .workflow-node.success {
+            border-color: var(--color-emerald);
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .workflow-node.error {
+            border-color: var(--color-red);
+            background: rgba(239, 68, 68, 0.15);
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 15px rgba(16, 185, 129, 0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .node-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .node-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .node-status {
+            font-size: 0.85rem;
+            color: rgba(255, 251, 240, 0.6);
+        }
+
+        .node-status.processing {
+            color: var(--color-gold);
+        }
+
+        .node-status.completed {
+            color: var(--color-emerald);
+        }
+
+        .node-status.failed {
+            color: var(--color-red);
+        }
+
+        .workflow-connector {
+            width: 40px;
+            height: 2px;
+            background: rgba(16, 185, 129, 0.3);
+            position: relative;
+        }
+
+        .workflow-connector::after {
+            content: '→';
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            color: var(--color-emerald);
+            font-size: 1.2rem;
+        }
+
+        .workflow-connector.active {
+            background: var(--color-emerald);
+            animation: flow 1.5s infinite;
+        }
+
+        @keyframes flow {
+            0% {
+                background: linear-gradient(90deg, transparent, var(--color-emerald));
+            }
+
+            100% {
+                background: linear-gradient(90deg, var(--color-emerald), transparent);
+            }
+        }
+
+        /* Color Themes */
+        .workflow-node.purple-theme {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .workflow-node.purple-theme.active {
+            border-color: var(--color-purple);
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
+        }
+
+        .workflow-connector.purple-theme {
+            background: rgba(139, 92, 246, 0.3);
+        }
+
+        .workflow-connector.purple-theme::after {
+            color: var(--color-purple);
+        }
+
+        .workflow-connector.purple-theme.active {
+            background: var(--color-purple);
+            animation: flowPurple 1.5s infinite;
+        }
+
+        @keyframes flowPurple {
+            0% {
+                background: linear-gradient(90deg, transparent, var(--color-purple));
+            }
+
+            100% {
+                background: linear-gradient(90deg, var(--color-purple), transparent);
+            }
+        }
+
+        .workflow-node.blue-theme {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .workflow-node.blue-theme.active {
+            border-color: var(--color-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .workflow-connector.blue-theme {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .workflow-connector.blue-theme::after {
+            color: var(--color-blue);
+        }
+
+        .workflow-node.pink-theme {
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+
+        .workflow-node.pink-theme.active {
+            border-color: var(--color-pink);
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .workflow-connector.pink-theme {
+            background: rgba(236, 72, 153, 0.3);
+        }
+
+        .workflow-connector.pink-theme::after {
+            color: var(--color-pink);
+        }
+
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--color-emerald);
+            background: transparent;
+            color: var(--color-emerald);
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+        }
+
+        .demo-btn:hover:not(:disabled) {
+            background: var(--color-emerald);
+            color: var(--color-navy);
+            transform: translateY(-2px);
+        }
+
+        .demo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .demo-btn.primary {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            border: none;
+            color: white;
+        }
+
+        .demo-btn.danger {
+            border-color: var(--color-red);
+            color: var(--color-red);
+        }
+
+        .demo-btn.danger:hover:not(:disabled) {
+            background: var(--color-red);
+            color: white;
+        }
+
+        .demo-log {
+            margin-top: 2rem;
+            background: rgba(10, 22, 40, 0.8);
+            border-radius: 15px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 0.5rem 0;
+            color: rgba(255, 251, 240, 0.7);
+        }
+
+        .log-entry.success {
+            color: var(--color-emerald);
+        }
+
+        .log-entry.error {
+            color: var(--color-red);
+        }
+
+        .log-entry.warning {
+            color: var(--color-gold);
+        }
+
+        .log-entry.processing {
+            color: var(--color-gold);
+        }
+
+        /* Custom Workflow Builder Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-navy-light);
+            border: 1px solid rgba(255, 251, 240, 0.2);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 251, 240, 0.1);
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 251, 240, 0.1);
+            color: var(--color-cream);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--color-red);
+            transform: rotate(90deg);
+        }
+
+        .builder-section {
+            margin-bottom: 2rem;
+        }
+
+        .builder-section h4 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--color-emerald);
+            margin-bottom: 1rem;
+        }
+
+        .node-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .node-template {
+            background: rgba(255, 251, 240, 0.05);
+            border: 2px dashed rgba(255, 251, 240, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s;
+        }
+
+        .node-template:hover {
+            border-color: var(--color-emerald);
+            background: rgba(16, 185, 129, 0.1);
+            transform: scale(1.05);
+        }
+
+        .node-template:active {
+            cursor: grabbing;
+        }
+
+        .node-template-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .node-template-name {
+            font-size: 0.9rem;
+            color: var(--color-cream);
+        }
+
+        .custom-workflow-canvas {
+            background: rgba(10, 22, 40, 0.5);
+            border: 2px dashed rgba(255, 251, 240, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .custom-workflow-placeholder {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 251, 240, 0.4);
+        }
+
+        .custom-node {
+            display: inline-block;
+            background: rgba(255, 251, 240, 0.05);
+            border: 2px solid var(--color-emerald);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 0.5rem;
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .custom-node-remove {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 25px;
+            height: 25px;
+            background: var(--color-red);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .custom-node-remove:hover {
+            transform: scale(1.2);
+        }
+
+        .builder-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-text h1 {
+                font-size: 3.5rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .workflow-nodes {
+                flex-direction: column;
+            }
+
+            .workflow-connector {
+                width: 2px;
+                height: 40px;
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-text p {
+                font-size: 1.1rem;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow-tabs {
+                flex-direction: column;
+            }
+
+            .demo-controls {
+                flex-direction: column;
+            }
+
+            .demo-btn {
+                width: 100%;
+            }
+        }
+
+        /* Scroll Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========== Popup Chatbot Styles ========== */
+
+        /* Floating Chat Button */
+        .chatbot-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .chatbot-float-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.6);
+        }
+
+        .chatbot-float-btn.active {
+            transform: scale(0.9);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chatbot-notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--color-red);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+            font-weight: bold;
+            animation: pulse-badge 2s infinite;
+        }
+
+        .chatbot-notification-badge.show {
+            display: flex;
+        }
+
+        @keyframes pulse-badge {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Popup Chat Window */
+        .chatbot-popup {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            width: 420px;
+            height: 650px;
+            background: rgba(255, 251, 240, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 251, 240, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chatbot-popup.show {
+            display: flex;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Chat Header */
+        .chatbot-popup-header {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            cursor: move;
+            user-select: none;
+        }
+
+        .chatbot-popup-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chatbot-popup-close {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-popup-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Chat Messages Area */
+        .chatbot-popup-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chatbot-popup-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbot-popup-messages::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .chatbot-popup-messages::-webkit-scrollbar-thumb {
+            background: var(--color-emerald);
+            border-radius: 3px;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 10px;
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .chat-message.bot .chat-avatar {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+        }
+
+        .chat-message.user .chat-avatar {
+            background: var(--color-gold);
+        }
+
+        .chat-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
+
+        .chat-message.bot .chat-bubble {
+            background: white;
+            color: var(--color-navy);
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .chat-edit-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--color-emerald);
+            border-radius: 6px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            opacity: 0.7;
+        }
+
+        .chat-edit-btn:hover {
+            background: var(--color-emerald);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .chat-content {
+            padding-right: 40px;
+        }
+
+        .chat-message.user .chat-bubble {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        /* Chat Input Area */
+        .chatbot-popup-input {
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+
+        .chatbot-popup-input textarea {
+            flex: 1;
+            border: 2px solid var(--color-emerald);
+            border-radius: 20px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            resize: none;
+            outline: none;
+            min-height: 45px;
+            max-height: 120px;
+            transition: border-color 0.3s;
+        }
+
+        .chatbot-popup-input textarea:focus {
+            border-color: var(--color-emerald-dark);
+        }
+
+        .chatbot-popup-send {
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+            min-width: 80px;
+        }
+
+        .chatbot-popup-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .chatbot-popup-send:active {
+            transform: scale(0.95);
+        }
+
+        /* Admin Panel */
+        .chatbot-admin-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.3s;
+        }
+
+        .chatbot-admin-panel.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .chatbot-admin-header {
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+            color: var(--color-navy);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-admin-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chatbot-admin-close {
+            width: 35px;
+            height: 35px;
+            background: rgba(10, 22, 40, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: var(--color-navy);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-admin-close:hover {
+            background: rgba(10, 22, 40, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chatbot-admin-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .admin-form-group {
+            margin-bottom: 25px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            color: var(--color-cream);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .admin-form-group input,
+        .admin-form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 251, 240, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 251, 240, 0.05);
+            color: var(--color-cream);
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            transition: all 0.3s;
+        }
+
+        .admin-form-group input:focus,
+        .admin-form-group select:focus {
+            outline: none;
+            border-color: var(--color-gold);
+            background: rgba(255, 251, 240, 0.1);
+        }
+
+        .admin-form-group input::placeholder {
+            color: rgba(255, 251, 240, 0.4);
+        }
+
+        .admin-api-status {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-api-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--color-emerald);
+            color: var(--color-emerald);
+        }
+
+        .admin-api-status.inactive {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--color-red);
+            color: var(--color-red);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .admin-btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+        }
+
+        .admin-btn-primary {
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+            color: var(--color-navy);
+        }
+
+        .admin-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .admin-btn-secondary {
+            background: rgba(255, 251, 240, 0.1);
+            color: var(--color-cream);
+            border: 2px solid rgba(255, 251, 240, 0.2);
+        }
+
+        .admin-btn-secondary:hover {
+            background: rgba(255, 251, 240, 0.15);
+        }
+
+        /* Loading Indicator */
+        .chat-loading {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+        }
+
+        .chat-loading-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-emerald);
+            border-radius: 50%;
+            animation: loadingDot 1.4s infinite;
+        }
+
+        .chat-loading-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .chat-loading-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes loadingDot {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chatbot-popup {
+                bottom: 0;
+                right: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .chatbot-float-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animated"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Phoenix AI</div>
+        <ul class="nav-links">
+            <li><a href="#demo">데모</a></li>
+            <li><a href="#features">기능</a></li>
+            <li><a href="#pricing">가격</a></li>
+        </ul>
+        <button class="btn-primary">무료 시작하기</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>
+                    모든 업무를<br>
+                    <span class="gradient-text">AI가 자동화</span>합니다
+                </h1>
+                <p>
+                    반복적인 업무는 AI에게 맡기고, 당신은 더 중요한 일에 집중하세요.
+                    n8n 기반 자동화로 업무 효율을 10배 높이고 비용은 70% 절감하세요.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn-primary">14일 무료 체험</button>
+                    <button class="btn-secondary"
+                        onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">
+                        라이브 데모 보기
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">자동화 워크플로우</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">업무 시간 절감</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">기업 고객</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">시스템 안정성</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Demo Section -->
+    <section class="workflow-demo reveal" id="demo">
+        <div class="demo-container">
+            <div class="demo-header">
+                <h3>🚀 실시간 워크플로우 시뮬레이터</h3>
+                <p style="color: rgba(255, 251, 240, 0.7); margin-bottom: 1.5rem;">
+                    원하는 워크플로우를 선택하고 실시간으로 작동을 확인하세요
+                </p>
+
+                <!-- Workflow Tabs -->
+                <div class="workflow-tabs">
+                    <button class="workflow-tab active" data-workflow="email">
+                        📧 이메일 자동화
+                    </button>
+                    <button class="workflow-tab" data-workflow="influencer">
+                        🎯 인플루언서 아웃리치
+                    </button>
+                    <button class="workflow-tab" data-workflow="meeting">
+                        📝 회의록 자동화
+                    </button>
+                    <button class="workflow-tab" data-workflow="social">
+                        📱 소셜미디어 관리
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-header">
+                    <div class="progress-title">워크플로우 진행률</div>
+                    <div class="progress-percentage">0%</div>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+                <div class="progress-status" id="progress-status">준비 완료</div>
+            </div>
+
+            <!-- Workflow Canvases -->
+            <div id="workflow-container">
+                <!-- Email Workflow -->
+                <div class="workflow-canvas active" data-canvas="email">
+                    <div class="workflow-nodes">
+                        <div class="workflow-node" data-workflow="email" data-node="1">
+                            <div class="node-icon">📧</div>
+                            <div class="node-title">이메일 수신</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector" data-workflow="email" data-connector="1"></div>
+                        <div class="workflow-node" data-workflow="email" data-node="2">
+                            <div class="node-icon">🤖</div>
+                            <div class="node-title">AI 분석</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector" data-workflow="email" data-connector="2"></div>
+                        <div class="workflow-node" data-workflow="email" data-node="3">
+                            <div class="node-icon">💾</div>
+                            <div class="node-title">데이터 저장</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector" data-workflow="email" data-connector="3"></div>
+                        <div class="workflow-node" data-workflow="email" data-node="4">
+                            <div class="node-icon">✉️</div>
+                            <div class="node-title">응답 발송</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Influencer Workflow -->
+                <div class="workflow-canvas" data-canvas="influencer">
+                    <div class="workflow-nodes">
+                        <div class="workflow-node purple-theme" data-workflow="influencer" data-node="1">
+                            <div class="node-icon">🔍</div>
+                            <div class="node-title">Instagram 검색</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector purple-theme" data-workflow="influencer" data-connector="1">
+                        </div>
+                        <div class="workflow-node purple-theme" data-workflow="influencer" data-node="2">
+                            <div class="node-icon">📊</div>
+                            <div class="node-title">팔로워 분석</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector purple-theme" data-workflow="influencer" data-connector="2">
+                        </div>
+                        <div class="workflow-node purple-theme" data-workflow="influencer" data-node="3">
+                            <div class="node-icon">📧</div>
+                            <div class="node-title">연락처 추출</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector purple-theme" data-workflow="influencer" data-connector="3">
+                        </div>
+                        <div class="workflow-node purple-theme" data-workflow="influencer" data-node="4">
+                            <div class="node-icon">💌</div>
+                            <div class="node-title">협업 제안</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meeting Workflow -->
+                <div class="workflow-canvas" data-canvas="meeting">
+                    <div class="workflow-nodes">
+                        <div class="workflow-node blue-theme" data-workflow="meeting" data-node="1">
+                            <div class="node-icon">🎤</div>
+                            <div class="node-title">음성 녹음</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector blue-theme" data-workflow="meeting" data-connector="1"></div>
+                        <div class="workflow-node blue-theme" data-workflow="meeting" data-node="2">
+                            <div class="node-icon">📝</div>
+                            <div class="node-title">텍스트 변환</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector blue-theme" data-workflow="meeting" data-connector="2"></div>
+                        <div class="workflow-node blue-theme" data-workflow="meeting" data-node="3">
+                            <div class="node-icon">🤖</div>
+                            <div class="node-title">AI 요약</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector blue-theme" data-workflow="meeting" data-connector="3"></div>
+                        <div class="workflow-node blue-theme" data-workflow="meeting" data-node="4">
+                            <div class="node-icon">📬</div>
+                            <div class="node-title">Slack 발송</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media Workflow -->
+                <div class="workflow-canvas" data-canvas="social">
+                    <div class="workflow-nodes">
+                        <div class="workflow-node pink-theme" data-workflow="social" data-node="1">
+                            <div class="node-icon">✍️</div>
+                            <div class="node-title">콘텐츠 생성</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector pink-theme" data-workflow="social" data-connector="1"></div>
+                        <div class="workflow-node pink-theme" data-workflow="social" data-node="2">
+                            <div class="node-icon">🎨</div>
+                            <div class="node-title">이미지 생성</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector pink-theme" data-workflow="social" data-connector="2"></div>
+                        <div class="workflow-node pink-theme" data-workflow="social" data-node="3">
+                            <div class="node-icon">📅</div>
+                            <div class="node-title">스케줄링</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                        <div class="workflow-connector pink-theme" data-workflow="social" data-connector="3"></div>
+                        <div class="workflow-node pink-theme" data-workflow="social" data-node="4">
+                            <div class="node-icon">🚀</div>
+                            <div class="node-title">멀티 포스팅</div>
+                            <div class="node-status">대기 중</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-log" id="demo-log">
+                <div class="log-entry">워크플로우 준비 완료. "실행" 버튼을 눌러주세요.</div>
+            </div>
+
+            <div class="demo-controls">
+                <button class="demo-btn primary" id="run-workflow">▶ 워크플로우 실행</button>
+                <button class="demo-btn" id="reset-workflow">↻ 초기화</button>
+                <button class="demo-btn" id="toggle-failure">
+                    ⚠️ 실패 시나리오 <span id="failure-toggle-text">(OFF)</span>
+                </button>
+                <button class="demo-btn" id="open-builder">🔧 커스텀 빌더</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Workflow Builder Modal -->
+    <div class="modal-overlay" id="builder-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🔧 커스텀 워크플로우 빌더</h3>
+                <button class="modal-close" id="close-builder">×</button>
+            </div>
+
+            <div class="builder-section">
+                <h4>1. 노드 선택</h4>
+                <p style="color: rgba(255, 251, 240, 0.6); margin-bottom: 1rem;">
+                    노드를 클릭하여 워크플로우에 추가하세요
+                </p>
+                <div class="node-palette">
+                    <div class="node-template" data-node-type="email">
+                        <div class="node-template-icon">📧</div>
+                        <div class="node-template-name">이메일</div>
+                    </div>
+                    <div class="node-template" data-node-type="ai">
+                        <div class="node-template-icon">🤖</div>
+                        <div class="node-template-name">AI 처리</div>
+                    </div>
+                    <div class="node-template" data-node-type="database">
+                        <div class="node-template-icon">💾</div>
+                        <div class="node-template-name">데이터베이스</div>
+                    </div>
+                    <div class="node-template" data-node-type="notification">
+                        <div class="node-template-icon">🔔</div>
+                        <div class="node-template-name">알림</div>
+                    </div>
+                    <div class="node-template" data-node-type="api">
+                        <div class="node-template-icon">🔌</div>
+                        <div class="node-template-name">API 호출</div>
+                    </div>
+                    <div class="node-template" data-node-type="filter">
+                        <div class="node-template-icon">🔍</div>
+                        <div class="node-template-name">필터</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="builder-section">
+                <h4>2. 워크플로우 구성</h4>
+                <div class="custom-workflow-canvas" id="custom-canvas">
+                    <div class="custom-workflow-placeholder">
+                        위에서 노드를 선택하여 워크플로우를 만들어보세요
+                    </div>
+                </div>
+            </div>
+
+            <div class="builder-actions">
+                <button class="demo-btn" id="clear-custom">🗑️ 모두 지우기</button>
+                <button class="demo-btn primary" id="save-custom">💾 저장하고 실행</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Main Variables
+        let isRunning = false;
+        let currentWorkflow = 'email';
+        let failureMode = false;
+        let customNodes = [];
+
+        // Workflow Scenarios
+        const workflowScenarios = {
+            email: {
+                name: '이메일 자동화',
+                steps: [
+                    { node: 1, connector: null, message: '이메일 수신 감지...', status: 'processing', delay: 800, canFail: false },
+                    { node: 1, connector: 1, message: '✓ 새 이메일 1건 수신 (발신자: customer@example.com)', status: 'completed', delay: 1200 },
+                    { node: 2, connector: null, message: 'AI 분석 시작...', status: 'processing', delay: 1500, canFail: true },
+                    { node: 2, connector: 2, message: '✓ 내용 분석 완료 (감정: 긍정 98%, 카테고리: 제품 문의)', status: 'completed', delay: 2000 },
+                    { node: 3, connector: null, message: 'Google Drive에 저장 중...', status: 'processing', delay: 2300, canFail: true },
+                    { node: 3, connector: 3, message: '✓ 데이터 저장 완료 (/고객문의/2025-01-05/email_001.json)', status: 'completed', delay: 2800 },
+                    { node: 4, connector: null, message: '자동 응답 생성 중...', status: 'processing', delay: 3200, canFail: false },
+                    { node: 4, connector: null, message: '✓ 워크플로우 완료! (총 소요시간: 3.8초)', status: 'completed', delay: 3800 }
+                ]
+            },
+            influencer: {
+                name: '인플루언서 아웃리치',
+                steps: [
+                    { node: 1, connector: null, message: 'Instagram Graph API 연결 중...', status: 'processing', delay: 800, canFail: true },
+                    { node: 1, connector: 1, message: '✓ 해시태그 #패션뷰티 검색 완료 (250개 계정 발견)', status: 'completed', delay: 1500 },
+                    { node: 2, connector: null, message: '팔로워 수 분석 중...', status: 'processing', delay: 2000, canFail: false },
+                    { node: 2, connector: 2, message: '✓ 조건 충족 인플루언서 47명 선별 (10K~100K 팔로워)', status: 'completed', delay: 2500 },
+                    { node: 3, connector: null, message: 'Business Discovery API로 연락처 추출 중...', status: 'processing', delay: 3000, canFail: true },
+                    { node: 3, connector: 3, message: '✓ 이메일 추출 완료 (32개 유효 연락처)', status: 'completed', delay: 3500 },
+                    { node: 4, connector: null, message: 'AI 기반 맞춤형 협업 제안서 생성 중...', status: 'processing', delay: 4000, canFail: false },
+                    { node: 4, connector: null, message: '✓ 이메일 발송 완료! 10건 발송 (응답률 예상: 15%)', status: 'completed', delay: 5000 },
+                    { node: 4, connector: null, message: '✓ 워크플로우 완료! (총 소요시간: 5.8초)', status: 'completed', delay: 5500 }
+                ]
+            },
+            meeting: {
+                name: '회의록 자동화',
+                steps: [
+                    { node: 1, connector: null, message: '회의 음성 녹음 시작...', status: 'processing', delay: 800, canFail: false },
+                    { node: 1, connector: 1, message: '✓ 45분 회의 녹음 완료 (파일 크기: 128MB)', status: 'completed', delay: 1500 },
+                    { node: 2, connector: null, message: 'Whisper AI로 텍스트 변환 중...', status: 'processing', delay: 2000, canFail: true },
+                    { node: 2, connector: 2, message: '✓ 텍스트 변환 완료 (15,234단어, 정확도 96%)', status: 'completed', delay: 3000 },
+                    { node: 3, connector: null, message: 'GPT-4로 회의 내용 요약 중...', status: 'processing', delay: 3500, canFail: false },
+                    { node: 3, connector: 3, message: '✓ 요약 완료 (핵심 안건 5개, 액션 아이템 12개 추출)', status: 'completed', delay: 4500 },
+                    { node: 4, connector: null, message: 'Slack 채널에 발송 중...', status: 'processing', delay: 5000, canFail: false },
+                    { node: 4, connector: null, message: '✓ #team-updates 채널에 발송 완료', status: 'completed', delay: 5500 },
+                    { node: 4, connector: null, message: '✓ 워크플로우 완료! (총 소요시간: 6.2초)', status: 'completed', delay: 6200 }
+                ]
+            },
+            social: {
+                name: '소셜미디어 관리',
+                steps: [
+                    { node: 1, connector: null, message: 'GPT-4로 SNS 콘텐츠 생성 중...', status: 'processing', delay: 800, canFail: false },
+                    { node: 1, connector: 1, message: '✓ 콘텐츠 3개 생성 완료 (Instagram, Twitter, LinkedIn)', status: 'completed', delay: 2000 },
+                    { node: 2, connector: null, message: 'DALL-E로 이미지 생성 중...', status: 'processing', delay: 2500, canFail: true },
+                    { node: 2, connector: 2, message: '✓ 고품질 이미지 3개 생성 (1024x1024px)', status: 'completed', delay: 4000 },
+                    { node: 3, connector: null, message: '최적 포스팅 시간 분석 중...', status: 'processing', delay: 4500, canFail: false },
+                    { node: 3, connector: 3, message: '✓ 스케줄 설정 완료 (오늘 19:00, 21:00, 23:00)', status: 'completed', delay: 5000 },
+                    { node: 4, connector: null, message: 'Instagram, Twitter, LinkedIn 동시 포스팅...', status: 'processing', delay: 5500, canFail: true },
+                    { node: 4, connector: null, message: '✓ 3개 채널 포스팅 완료 (예상 도달: 15,000명)', status: 'completed', delay: 6500 },
+                    { node: 4, connector: null, message: '✓ 워크플로우 완료! (총 소요시간: 7.1초)', status: 'completed', delay: 7100 }
+                ]
+            }
+        };
+
+        // DOM Elements
+        const runBtn = document.getElementById('run-workflow');
+        const resetBtn = document.getElementById('reset-workflow');
+        const failureBtn = document.getElementById('toggle-failure');
+        const failureText = document.getElementById('failure-toggle-text');
+        const builderBtn = document.getElementById('open-builder');
+        const builderModal = document.getElementById('builder-modal');
+        const closeBuilderBtn = document.getElementById('close-builder');
+        const demoLog = document.getElementById('demo-log');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.querySelector('.progress-percentage');
+        const progressStatus = document.getElementById('progress-status');
+        const workflowTabs = document.querySelectorAll('.workflow-tab');
+
+        // Tab Switching
+        workflowTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                if (isRunning) return;
+
+                const workflow = tab.dataset.workflow;
+
+                workflowTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                document.querySelectorAll('.workflow-canvas').forEach(canvas => {
+                    canvas.classList.remove('active');
+                });
+                document.querySelector(`[data-canvas="${workflow}"]`).classList.add('active');
+
+                currentWorkflow = workflow;
+                resetWorkflow();
+            });
+        });
+
+        // Toggle Failure Mode
+        failureBtn.addEventListener('click', () => {
+            failureMode = !failureMode;
+            failureText.textContent = failureMode ? '(ON)' : '(OFF)';
+            failureBtn.style.borderColor = failureMode ? 'var(--color-red)' : 'var(--color-emerald)';
+            failureBtn.style.color = failureMode ? 'var(--color-red)' : 'var(--color-emerald)';
+            addLogEntry(`실패 시나리오 ${failureMode ? '활성화' : '비활성화'}`, 'warning');
+        });
+
+        // Progress Update
+        function updateProgress(percentage, status) {
+            progressBar.style.width = `${percentage}%`;
+            progressPercentage.textContent = `${Math.round(percentage)}%`;
+            progressStatus.textContent = status;
+        }
+
+        // Log Entry
+        function addLogEntry(message, className = '') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${className}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            demoLog.appendChild(entry);
+            demoLog.scrollTop = demoLog.scrollHeight;
+        }
+
+        // Update Node
+        function updateNode(workflow, nodeNum, status) {
+            const node = document.querySelector(`[data-workflow="${workflow}"][data-node="${nodeNum}"]`);
+            if (!node) return;
+
+            const statusEl = node.querySelector('.node-status');
+
+            node.classList.remove('active', 'success', 'error');
+
+            if (status === 'processing') {
+                node.classList.add('active');
+                statusEl.textContent = '처리 중...';
+                statusEl.className = 'node-status processing';
+            } else if (status === 'completed') {
+                node.classList.add('success');
+                statusEl.textContent = '완료';
+                statusEl.className = 'node-status completed';
+            } else if (status === 'failed') {
+                node.classList.add('error');
+                statusEl.textContent = '실패';
+                statusEl.className = 'node-status failed';
+            }
+        }
+
+        // Update Connector
+        function updateConnector(workflow, connectorNum, active) {
+            const connector = document.querySelector(`[data-workflow="${workflow}"][data-connector="${connectorNum}"]`);
+            if (connector) {
+                if (active) {
+                    connector.classList.add('active');
+                } else {
+                    connector.classList.remove('active');
+                }
+            }
+        }
+
+        // Run Workflow
+        async function runWorkflow() {
+            if (isRunning) return;
+            isRunning = true;
+            runBtn.disabled = true;
+            runBtn.textContent = '⏳ 실행 중...';
+            resetBtn.disabled = true;
+
+            const scenario = workflowScenarios[currentWorkflow];
+            const steps = scenario.steps;
+            const totalSteps = steps.length;
+
+            addLogEntry(`${scenario.name} 워크플로우 시작`, 'processing');
+            updateProgress(0, '시작 중...');
+
+            let failed = false;
+
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                await new Promise(resolve => setTimeout(resolve, step.delay));
+
+                // Simulate failure
+                if (failureMode && step.canFail && Math.random() < 0.3) {
+                    updateNode(currentWorkflow, step.node, 'failed');
+                    addLogEntry(`✗ 오류 발생: ${step.node}번 노드에서 실패 (재시도 권장)`, 'error');
+                    updateProgress((i / totalSteps) * 100, '오류 발생');
+                    failed = true;
+                    break;
+                }
+
+                if (step.node) {
+                    updateNode(currentWorkflow, step.node, step.status);
+                }
+
+                if (step.connector) {
+                    updateConnector(currentWorkflow, step.connector, true);
+                }
+
+                addLogEntry(step.message, step.status);
+                updateProgress(((i + 1) / totalSteps) * 100, step.message);
+            }
+
+            if (failed) {
+                runBtn.textContent = '❌ 실패 - 다시 시도';
+                addLogEntry('워크플로우 실패로 중단됨', 'error');
+            } else {
+                runBtn.textContent = '✓ 완료!';
+                updateProgress(100, '워크플로우 완료');
+            }
+
+            isRunning = false;
+            resetBtn.disabled = false;
+
+            setTimeout(() => {
+                runBtn.disabled = false;
+                runBtn.textContent = '▶ 워크플로우 실행';
+            }, 2000);
+        }
+
+        // Reset Workflow
+        function resetWorkflow() {
+            for (let i = 1; i <= 4; i++) {
+                const node = document.querySelector(`[data-workflow="${currentWorkflow}"][data-node="${i}"]`);
+                if (node) {
+                    const statusEl = node.querySelector('.node-status');
+                    node.classList.remove('active', 'success', 'error');
+                    statusEl.textContent = '대기 중';
+                    statusEl.className = 'node-status';
+                }
+            }
+
+            for (let i = 1; i <= 3; i++) {
+                updateConnector(currentWorkflow, i, false);
+            }
+
+            demoLog.innerHTML = '<div class="log-entry">워크플로우 준비 완료. "실행" 버튼을 눌러주세요.</div>';
+            updateProgress(0, '준비 완료');
+
+            runBtn.textContent = '▶ 워크플로우 실행';
+            runBtn.disabled = false;
+        }
+
+        // Custom Workflow Builder
+        const nodeTemplates = document.querySelectorAll('.node-template');
+        const customCanvas = document.getElementById('custom-canvas');
+        const clearCustomBtn = document.getElementById('clear-custom');
+        const saveCustomBtn = document.getElementById('save-custom');
+
+        const nodeIcons = {
+            email: '📧',
+            ai: '🤖',
+            database: '💾',
+            notification: '🔔',
+            api: '🔌',
+            filter: '🔍'
+        };
+
+        const nodeNames = {
+            email: '이메일',
+            ai: 'AI 처리',
+            database: '데이터베이스',
+            notification: '알림',
+            api: 'API 호출',
+            filter: '필터'
+        };
+
+        nodeTemplates.forEach(template => {
+            template.addEventListener('click', () => {
+                const nodeType = template.dataset.nodeType;
+                addCustomNode(nodeType);
+            });
+        });
+
+        function addCustomNode(type) {
+            const placeholder = customCanvas.querySelector('.custom-workflow-placeholder');
+            if (placeholder) {
+                placeholder.remove();
+            }
+
+            const nodeId = Date.now();
+            const node = document.createElement('div');
+            node.className = 'custom-node';
+            node.dataset.nodeId = nodeId;
+            node.innerHTML = `
+                <button class="custom-node-remove" onclick="removeCustomNode(${nodeId})">×</button>
+                <div style="font-size: 2rem;">${nodeIcons[type]}</div>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem;">${nodeNames[type]}</div>
+            `;
+
+            customCanvas.appendChild(node);
+            customNodes.push({ id: nodeId, type, name: nodeNames[type], icon: nodeIcons[type] });
+
+            addLogEntry(`커스텀 워크플로우: ${nodeNames[type]} 노드 추가됨`, 'success');
+        }
+
+        function removeCustomNode(nodeId) {
+            const node = document.querySelector(`[data-node-id="${nodeId}"]`);
+            if (node) {
+                node.remove();
+                customNodes = customNodes.filter(n => n.id !== nodeId);
+
+                if (customNodes.length === 0) {
+                    customCanvas.innerHTML = '<div class="custom-workflow-placeholder">위에서 노드를 선택하여 워크플로우를 만들어보세요</div>';
+                }
+
+                addLogEntry(`커스텀 워크플로우: 노드 제거됨`, 'warning');
+            }
+        }
+        window.removeCustomNode = removeCustomNode;
+
+        clearCustomBtn.addEventListener('click', () => {
+            customCanvas.innerHTML = '<div class="custom-workflow-placeholder">위에서 노드를 선택하여 워크플로우를 만들어보세요</div>';
+            customNodes = [];
+            addLogEntry('커스텀 워크플로우: 모든 노드 제거됨', 'warning');
+        });
+
+        saveCustomBtn.addEventListener('click', () => {
+            if (customNodes.length === 0) {
+                alert('최소 1개 이상의 노드를 추가해주세요!');
+                return;
+            }
+
+            addLogEntry(`커스텀 워크플로우 저장됨 (${customNodes.length}개 노드)`, 'success');
+            alert(`✅ 커스텀 워크플로우가 저장되었습니다!\n\n총 ${customNodes.length}개의 노드로 구성된 워크플로우입니다.\n\n실제 제품에서는 이 워크플로우가 자동으로 실행됩니다.`);
+            builderModal.classList.remove('active');
+        });
+
+        builderBtn.addEventListener('click', () => {
+            builderModal.classList.add('active');
+        });
+
+        closeBuilderBtn.addEventListener('click', () => {
+            builderModal.classList.remove('active');
+        });
+
+        builderModal.addEventListener('click', (e) => {
+            if (e.target === builderModal) {
+                builderModal.classList.remove('active');
+            }
+        });
+
+        // Event Listeners
+        runBtn.addEventListener('click', runWorkflow);
+        resetBtn.addEventListener('click', resetWorkflow);
+
+        // Scroll Reveal
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+
+        window.addEventListener('scroll', reveal);
+        reveal();
+
+        // Animated Stats
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const text = stat.textContent;
+                const hasPercent = text.includes('%');
+                const hasPlus = text.includes('+');
+                const target = parseInt(text.replace(/[^0-9]/g, ''));
+
+                let current = 0;
+                const increment = target / 60;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target.toLocaleString() + (hasPercent ? '%' : '') + (hasPlus ? '+' : '');
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current).toLocaleString() + (hasPercent ? '%' : '') + (hasPlus ? '+' : '');
+                    }
+                }, 30);
+            });
+        }
+
+        setTimeout(animateStats, 500);
+    </script>
+
+    <!-- ========== Popup Chatbot ========== -->
+
+    <!-- Floating Chat Button -->
+    <button class="chatbot-float-btn" id="chatbotFloatBtn" onclick="toggleChatbot()">
+        💬
+        <span class="chatbot-notification-badge" id="chatbotBadge">1</span>
+    </button>
+
+    <!-- Popup Chat Window -->
+    <div class="chatbot-popup" id="chatbotPopup">
+        <!-- Chat Header -->
+        <div class="chatbot-popup-header">
+            <div class="chatbot-popup-title">
+                <span>🤖</span>
+                <span>Phoenix AI Assistant</span>
+            </div>
+            <button class="chatbot-popup-close" onclick="toggleChatbot()">×</button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chatbot-popup-messages" id="chatbotMessages">
+            <!-- Messages will be added here dynamically -->
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chatbot-popup-input">
+            <textarea id="chatbotInput" placeholder="메시지를 입력하세요..." rows="1"
+                onkeypress="handleChatKeyPress(event)"></textarea>
+            <button class="chatbot-popup-send" onclick="sendChatMessage()">전송</button>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="chatbot-admin-panel" id="chatbotAdminPanel">
+            <div class="chatbot-admin-header">
+                <div class="chatbot-admin-title">
+                    <span>⚙️</span>
+                    <span>관리자 모드</span>
+                </div>
+                <button class="chatbot-admin-close" onclick="closeAdminPanel()">×</button>
+            </div>
+            <div class="chatbot-admin-content">
+                <div class="admin-api-status" id="adminApiStatus">
+                    <span>❌</span>
+                    <span>API가 설정되지 않았습니다</span>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="adminApiKey">OpenAI API Key</label>
+                    <input type="password" id="adminApiKey" placeholder="sk-...">
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="adminModel">AI 모델 선택</label>
+                    <select id="adminModel">
+                        <option value="gpt-4o-mini">GPT-4o-mini (빠르고 경제적)</option>
+                        <option value="gpt-4o">GPT-4o (고성능)</option>
+                        <option value="gpt-5-mini">GPT-5-mini (최신 경량 모델)</option>
+                    </select>
+                </div>
+
+                <div class="admin-buttons">
+                    <button class="admin-btn admin-btn-primary" onclick="saveAdminSettings()">저장</button>
+                    <button class="admin-btn admin-btn-secondary" onclick="closeAdminPanel()">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot JavaScript -->
+    <script>
+        // Chatbot State
+        const chatbotState = {
+            isOpen: false,
+            apiKey: localStorage.getItem('phoenixai_api_key') || '',
+            model: localStorage.getItem('phoenixai_model') || 'gpt-4o-mini',
+            conversationHistory: [],
+            isProcessing: false
+        };
+
+        // Initialize chatbot
+        function initChatbot() {
+            loadAdminSettings();
+            addWelcomeMessage();
+            updateAdminStatus();
+            initDraggable();
+        }
+
+        // Toggle chatbot popup
+        function toggleChatbot() {
+            const popup = document.getElementById('chatbotPopup');
+            const btn = document.getElementById('chatbotFloatBtn');
+            const badge = document.getElementById('chatbotBadge');
+
+            chatbotState.isOpen = !chatbotState.isOpen;
+
+            if (chatbotState.isOpen) {
+                popup.classList.add('show');
+                btn.classList.add('active');
+                badge.classList.remove('show');
+                scrollToBottom();
+            } else {
+                popup.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        }
+
+        // Add welcome message
+        function addWelcomeMessage() {
+            const welcomeMsg = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">
+                        안녕하세요! 👋
+                    </div>
+                    <div style="font-size: 0.95rem; color: #666; line-height: 1.6;">
+                        Phoenix AI 어시스턴트입니다.<br>
+                        무엇을 도와드릴까요?
+                    </div>
+                    <div style="margin-top: 15px; padding: 12px; background: #f0f8ff; border-radius: 10px; font-size: 0.85rem; color: #333;">
+                        💡 <strong>Tip:</strong> '관리자모드'를 입력하면 OpenAI API를 설정할 수 있습니다!
+                    </div>
+                </div>
+            `;
+            addBotMessage(welcomeMsg, false);
+        }
+
+        // Handle key press in chat input
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        // Send chat message
+        async function sendChatMessage() {
+            const input = document.getElementById('chatbotInput');
+            const message = input.value.trim();
+
+            if (!message || chatbotState.isProcessing) return;
+
+            // Add user message
+            addUserMessage(message);
+            input.value = '';
+
+            // Auto-resize textarea
+            input.style.height = 'auto';
+
+            // Check for admin mode trigger
+            if (message === '관리자모드') {
+                openAdminPanel();
+                return;
+            }
+
+            // Process message
+            chatbotState.isProcessing = true;
+            await processMessage(message);
+            chatbotState.isProcessing = false;
+        }
+
+        // Process message with AI or fallback
+        async function processMessage(message) {
+            // Show loading
+            const loadingId = showLoading();
+
+            try {
+                if (chatbotState.apiKey) {
+                    // Use OpenAI API
+                    await generateAIResponse(message, loadingId);
+                } else {
+                    // Use fallback response
+                    setTimeout(() => {
+                        removeLoading(loadingId);
+                        const response = generateFallbackResponse(message);
+                        addBotMessage(response);
+                    }, 800);
+                }
+            } catch (error) {
+                console.error('Error processing message:', error);
+                removeLoading(loadingId);
+                addBotMessage('죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        }
+
+        // Generate AI response using OpenAI API
+        async function generateAIResponse(message, loadingId) {
+            try {
+                // Add message to conversation history
+                chatbotState.conversationHistory.push({
+                    role: 'user',
+                    content: message
+                });
+
+                // Prepare messages for API
+                const messages = [
+                    {
+                        role: 'system',
+                        content: `당신은 Phoenix AI의 친절하고 전문적인 AI 어시스턴트입니다. 
+사용자의 질문에 정확하고 도움이 되는 답변을 제공하세요. 
+답변은 간결하면서도 충분한 정보를 담아야 하며, 친근한 톤을 유지하세요.
+필요한 경우 구조화된 형식(리스트, 단계별 설명 등)을 사용하세요.`
+                    },
+                    ...chatbotState.conversationHistory.slice(-10) // Keep last 10 messages
+                ];
+
+                // Call OpenAI API
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${chatbotState.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: chatbotState.model,
+                        messages: messages,
+                        temperature: 0.7,
+                        max_tokens: 1000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+
+                // Add to conversation history
+                chatbotState.conversationHistory.push({
+                    role: 'assistant',
+                    content: aiResponse
+                });
+
+                // Remove loading and show response
+                removeLoading(loadingId);
+
+                // Format and add response with editing capability
+                const formattedResponse = formatAIResponse(aiResponse);
+                addBotMessage(formattedResponse);
+
+            } catch (error) {
+                console.error('OpenAI API Error:', error);
+                removeLoading(loadingId);
+
+                const errorMsg = `
+                    <div style="color: #dc3545;">
+                        ❌ AI 응답 생성 중 오류가 발생했습니다.<br>
+                        <small>${error.message}</small>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.9rem;">
+                        기본 응답으로 전환합니다...
+                    </div>
+                `;
+                addBotMessage(errorMsg);
+
+                // Fallback to basic response
+                setTimeout(() => {
+                    const fallback = generateFallbackResponse(message);
+                    addBotMessage(fallback);
+                }, 500);
+            }
+        }
+
+        // Format AI response with proper HTML
+        function formatAIResponse(text) {
+            // Convert markdown-style formatting to HTML
+            let formatted = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
+                .replace(/\n\n/g, '<br><br>') // Paragraphs
+                .replace(/\n- /g, '<br>• ') // Bullet points
+                .replace(/\n(\d+)\. /g, '<br>$1. '); // Numbered lists
+
+            return `
+                <div style="line-height: 1.6;">
+                    ${formatted}
+                </div>
+            `;
+        }
+
+        // Generate fallback response
+        function generateFallbackResponse(message) {
+            const responses = [
+                {
+                    keywords: ['안녕', 'hello', 'hi', '하이'],
+                    response: '안녕하세요! 👋 Phoenix AI 어시스턴트입니다. 무엇을 도와드릴까요?'
+                },
+                {
+                    keywords: ['감사', '고마워', 'thanks', 'thank'],
+                    response: '천만에요! 😊 더 궁금한 점이 있으시면 언제든 물어보세요.'
+                },
+                {
+                    keywords: ['기능', 'feature', '할 수 있'],
+                    response: `
+                        <div>
+                            <strong>Phoenix AI의 주요 기능:</strong><br><br>
+                            • 🤖 AI 기반 업무 자동화<br>
+                            • 📊 워크플로우 관리<br>
+                            • 🔄 프로세스 최적화<br>
+                            • 📈 실시간 분석<br><br>
+                            더 자세한 정보가 필요하신가요?
+                        </div>
+                    `
+                },
+                {
+                    keywords: ['가격', 'price', '비용', 'cost'],
+                    response: `
+                        <div>
+                            <strong>Phoenix AI 가격 정보:</strong><br><br>
+                            무료 체험판을 제공하고 있습니다!<br>
+                            자세한 가격 정보는 영업팀에 문의해주세요.<br><br>
+                            📧 contact@phoenixai.com
+                        </div>
+                    `
+                }
+            ];
+
+            // Check for keyword matches
+            const lowerMessage = message.toLowerCase();
+            for (const item of responses) {
+                if (item.keywords.some(keyword => lowerMessage.includes(keyword))) {
+                    return item.response;
+                }
+            }
+
+            // Default response
+            return `
+                <div>
+                    "${message}"에 대한 질문 감사합니다! 🙏<br><br>
+                    더 정확한 답변을 위해 OpenAI API를 설정해보세요.<br>
+                    '관리자모드'를 입력하여 설정할 수 있습니다.<br><br>
+                    <small style="color: #666;">
+                        💡 Tip: API 설정 후 더 스마트한 대화가 가능합니다!
+                    </small>
+                </div>
+            `;
+        }
+
+        // Add user message to chat
+        function addUserMessage(message) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message user';
+            messageDiv.innerHTML = `
+                <div class="chat-avatar">👤</div>
+                <div class="chat-bubble">${escapeHtml(message)}</div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Add bot message to chat (with edit functionality)
+        function addBotMessage(message, isEditable = true) {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            const messageId = 'msg-' + Date.now();
+            messageDiv.className = 'chat-message bot';
+            messageDiv.id = messageId;
+
+            const editButton = isEditable && chatbotState.apiKey ?
+                `<button class="chat-edit-btn" onclick="editBotMessage('${messageId}')" title="응답 편집">✏️</button>` : '';
+
+            messageDiv.innerHTML = `
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-bubble">
+                    <div class="chat-content">${message}</div>
+                    ${editButton}
+                </div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Edit bot message
+        function editBotMessage(messageId) {
+            const messageDiv = document.getElementById(messageId);
+            if (!messageDiv) return;
+
+            const contentDiv = messageDiv.querySelector('.chat-content');
+            const currentContent = contentDiv.innerHTML;
+
+            // Create editable textarea
+            const textarea = document.createElement('textarea');
+            textarea.className = 'chat-edit-textarea';
+            textarea.value = contentDiv.textContent;
+            textarea.style.width = '100%';
+            textarea.style.minHeight = '100px';
+            textarea.style.padding = '10px';
+            textarea.style.border = '2px solid var(--color-emerald)';
+            textarea.style.borderRadius = '8px';
+            textarea.style.fontSize = '14px';
+            textarea.style.fontFamily = 'inherit';
+            textarea.style.resize = 'vertical';
+
+            // Create button container
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.marginTop = '10px';
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.gap = '8px';
+
+            // Save button
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾 저장';
+            saveBtn.className = 'chat-save-btn';
+            saveBtn.style.padding = '8px 16px';
+            saveBtn.style.background = 'var(--color-emerald)';
+            saveBtn.style.color = 'white';
+            saveBtn.style.border = 'none';
+            saveBtn.style.borderRadius = '6px';
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.fontSize = '14px';
+            saveBtn.onclick = () => saveBotMessage(messageId, textarea.value);
+
+            // Cancel button
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '❌ 취소';
+            cancelBtn.className = 'chat-cancel-btn';
+            cancelBtn.style.padding = '8px 16px';
+            cancelBtn.style.background = '#6c757d';
+            cancelBtn.style.color = 'white';
+            cancelBtn.style.border = 'none';
+            cancelBtn.style.borderRadius = '6px';
+            cancelBtn.style.cursor = 'pointer';
+            cancelBtn.style.fontSize = '14px';
+            cancelBtn.onclick = () => cancelEditBotMessage(messageId, currentContent);
+
+            buttonContainer.appendChild(saveBtn);
+            buttonContainer.appendChild(cancelBtn);
+
+            // Replace content with textarea
+            contentDiv.innerHTML = '';
+            contentDiv.appendChild(textarea);
+            contentDiv.appendChild(buttonContainer);
+
+            // Hide edit button
+            const editBtn = messageDiv.querySelector('.chat-edit-btn');
+            if (editBtn) editBtn.style.display = 'none';
+
+            // Focus textarea
+            textarea.focus();
+        }
+
+        // Save edited bot message
+        function saveBotMessage(messageId, newContent) {
+            const messageDiv = document.getElementById(messageId);
+            if (!messageDiv) return;
+
+            const contentDiv = messageDiv.querySelector('.chat-content');
+            const formattedContent = formatAIResponse(newContent);
+
+            contentDiv.innerHTML = formattedContent;
+
+            // Show edit button again
+            const editBtn = messageDiv.querySelector('.chat-edit-btn');
+            if (editBtn) editBtn.style.display = 'block';
+
+            // Show success notification
+            showNotification('✅ 응답이 수정되었습니다!');
+        }
+
+        // Cancel editing bot message
+        function cancelEditBotMessage(messageId, originalContent) {
+            const messageDiv = document.getElementById(messageId);
+            if (!messageDiv) return;
+
+            const contentDiv = messageDiv.querySelector('.chat-content');
+            contentDiv.innerHTML = originalContent;
+
+            // Show edit button again
+            const editBtn = messageDiv.querySelector('.chat-edit-btn');
+            if (editBtn) editBtn.style.display = 'block';
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.background = 'var(--color-emerald)';
+            notification.style.color = 'white';
+            notification.style.padding = '12px 24px';
+            notification.style.borderRadius = '8px';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.zIndex = '10000';
+            notification.style.fontSize = '14px';
+            notification.style.fontWeight = 'bold';
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.3s';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // Show loading indicator
+        function showLoading() {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            const loadingDiv = document.createElement('div');
+            const loadingId = 'loading-' + Date.now();
+            loadingDiv.id = loadingId;
+            loadingDiv.className = 'chat-message bot';
+            loadingDiv.innerHTML = `
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-bubble">
+                    <div class="chat-loading">
+                        <div class="chat-loading-dot"></div>
+                        <div class="chat-loading-dot"></div>
+                        <div class="chat-loading-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(loadingDiv);
+            scrollToBottom();
+            return loadingId;
+        }
+
+        // Remove loading indicator
+        function removeLoading(loadingId) {
+            const loadingDiv = document.getElementById(loadingId);
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
+        }
+
+        // Scroll to bottom of messages
+        function scrollToBottom() {
+            const messagesContainer = document.getElementById('chatbotMessages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Admin Panel Functions
+        function openAdminPanel() {
+            document.getElementById('chatbotAdminPanel').classList.add('show');
+            addBotMessage('⚙️ 관리자 모드가 열렸습니다. API 설정을 진행해주세요.', false);
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('chatbotAdminPanel').classList.remove('show');
+        }
+
+        function loadAdminSettings() {
+            document.getElementById('adminApiKey').value = chatbotState.apiKey;
+            document.getElementById('adminModel').value = chatbotState.model;
+        }
+
+        function saveAdminSettings() {
+            const apiKey = document.getElementById('adminApiKey').value.trim();
+            const model = document.getElementById('adminModel').value;
+
+            if (!apiKey) {
+                alert('API Key를 입력해주세요.');
+                return;
+            }
+
+            // Save to state and localStorage
+            chatbotState.apiKey = apiKey;
+            chatbotState.model = model;
+            localStorage.setItem('phoenixai_api_key', apiKey);
+            localStorage.setItem('phoenixai_model', model);
+
+            // Update status
+            updateAdminStatus();
+
+            // Close panel
+            closeAdminPanel();
+
+            // Show success message
+            const modelName = model === 'gpt-4o-mini' ? 'GPT-4o-mini' :
+                model === 'gpt-4o' ? 'GPT-4o' : 'GPT-5-mini';
+            addBotMessage(`
+                <div style="color: #10B981;">
+                    ✅ API 설정이 완료되었습니다!<br>
+                    <small>모델: ${modelName}</small>
+                </div>
+            `, false);
+        }
+
+        function updateAdminStatus() {
+            const statusDiv = document.getElementById('adminApiStatus');
+            if (chatbotState.apiKey) {
+                statusDiv.className = 'admin-api-status active';
+                statusDiv.innerHTML = `
+                    <span>✅</span>
+                    <span>API가 설정되었습니다 (${chatbotState.model})</span>
+                `;
+            } else {
+                statusDiv.className = 'admin-api-status inactive';
+                statusDiv.innerHTML = `
+                    <span>❌</span>
+                    <span>API가 설정되지 않았습니다</span>
+                `;
+            }
+        }
+
+        // Draggable functionality
+        function initDraggable() {
+            const popup = document.getElementById('chatbotPopup');
+            const header = document.querySelector('.chatbot-popup-header');
+
+            if (!popup || !header) return;
+
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            header.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+
+            // Touch events for mobile
+            header.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+
+            function dragStart(e) {
+                // Don't drag if clicking on close button
+                if (e.target.closest('.chatbot-popup-close')) {
+                    return;
+                }
+
+                if (e.type === 'touchstart') {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+
+                if (e.target === header || header.contains(e.target)) {
+                    isDragging = true;
+                    popup.style.transition = 'none';
+                }
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+
+                    if (e.type === 'touchmove') {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    setTranslate(currentX, currentY, popup);
+                }
+            }
+
+            function dragEnd(e) {
+                if (isDragging) {
+                    // Get current position after dragging
+                    const rect = popup.getBoundingClientRect();
+
+                    // Calculate new position
+                    let newLeft = rect.left;
+                    let newTop = rect.top;
+
+                    // Get popup dimensions
+                    const popupWidth = rect.width;
+                    const popupHeight = rect.height;
+
+                    // Calculate viewport boundaries
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+
+                    // Constrain to viewport - keep entire popup visible (no clipping)
+                    // Left boundary (minimum 0)
+                    if (newLeft < 0) {
+                        newLeft = 0;
+                    }
+                    // Right boundary (popup must be fully inside)
+                    if (newLeft + popupWidth > viewportWidth) {
+                        newLeft = viewportWidth - popupWidth;
+                    }
+                    // Top boundary (minimum 0)
+                    if (newTop < 0) {
+                        newTop = 0;
+                    }
+                    // Bottom boundary (popup must be fully inside)
+                    if (newTop + popupHeight > viewportHeight) {
+                        newTop = viewportHeight - popupHeight;
+                    }
+
+                    // Apply constrained position
+                    popup.style.transform = 'none';
+                    popup.style.left = newLeft + 'px';
+                    popup.style.top = newTop + 'px';
+                    popup.style.right = 'auto';
+                    popup.style.bottom = 'auto';
+
+                    // Reset offsets
+                    xOffset = 0;
+                    yOffset = 0;
+
+                    isDragging = false;
+                    popup.style.transition = '';
+                }
+            }
+
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            }
+        }
+
+        // Auto-resize textarea
+        document.addEventListener('DOMContentLoaded', function () {
+            const textarea = document.getElementById('chatbotInput');
+            if (textarea) {
+                textarea.addEventListener('input', function () {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                });
+            }
+
+            // Initialize chatbot
+            initChatbot();
+
+            // Show notification badge
+            setTimeout(() => {
+                document.getElementById('chatbotBadge').classList.add('show');
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
